@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const User = require('./models/users');
-const Product = require('./models/products');
 
 app.use(express.json())
 
@@ -12,16 +11,11 @@ mongoose.connection.on('error', (err) => {
 });
 // mock data
 const users = [{}];
-const products = [{}];
 //get all
 app.get('/users', async (req, res) => {
   const users = await User.find({});
   console.log(users);
   res.json(users);
-});
-app.get('/products', async (req, res) => {
-  const products = await Product.find({});
-  res.json(products);
 });
 
 //get one
