@@ -7,7 +7,11 @@ const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.SECRET;
 const API = process.env.API;
-app.use(express.json())
+app.use(express.json());
+
+const Freelance = require ('./models/freelances');
+const Employer = require ('./models/employers');
+
 
 mongoose.connect(API, { useNewUrlParser: true })
 mongoose.connection.on('error', (err) => {
@@ -81,7 +85,7 @@ app.post('/loginFL', async(req, res) => {
 //get user profile
 app.get('/profileFL/me', async (req, res) => {
   try{
-    const token = req.headers.authoriaztion.split(' ')[1];
+    const token = req.headers.authorization.split(' ')[1];
     var iss = jwt.verify(token, SECRET).iss;
     const freelance = await Freelance.findOne({_id: iss});
     res.json({status: 'ok', freelance});
