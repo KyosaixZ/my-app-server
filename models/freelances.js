@@ -4,10 +4,9 @@ const Schema = mongoose.Schema;
 const freelanceSchema = new Schema(
   {
     name: String,
-    role: String,
     email: String,
     password: String,
-    jobTitle: String,
+    jobTitle: Array,
     phoneNumber: String,
     responseRate: Number,
     onTimeRate: Number,
