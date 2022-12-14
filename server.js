@@ -1,17 +1,13 @@
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
+const express = require('express')
+const app = express()
+const mongoose = require('mongoose')
 const cors = require('cors');
 require('dotenv').config();
 const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.SECRET;
 const API = process.env.API;
-
-const User = require('./models/users1');
-const Freelance = require('./models/freelances');
-const Employer = require('./models/employers');
-
+app.use(express.json())
 
 mongoose.connect(API, { useNewUrlParser: true })
 mongoose.connection.on('error', (err) => {
@@ -137,19 +133,6 @@ app.post('/users', async (req, res) => {
   await user.save();
   res.status(201).end();
 });
-app.post('/freelances', async (req, res) => {
-  const payload = req.body;
-  const freelance = new Freelance(payload);
-  await freelance.save();
-  res.status(201).end();
-});
-app.post('/employers', async (req, res) => {
-  const payload = req.body;
-  const employer = new Employer(payload);
-  await employer.save();
-  res.status(201).end();
-});
-
 
 //Put
 app.put('/users/:id', async (req, res) => {
