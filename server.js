@@ -83,9 +83,9 @@ app.post('/loginFL', async(req, res) => {
 });
 
 //get user profile
-app.get('/profileFL/me', async (req, res) => {
+app.get('/profileFL/me', async(req, res) => {
   try{
-    const token = req.headers.authoriaztion.split(' ')[1];
+    const token = req.headers.authorization.split(' ')[1];
     var iss = jwt.verify(token, SECRET).iss;
     const freelance = await Freelance.findOne({_id: iss});
     res.json({status: 'ok', freelance});
@@ -93,6 +93,7 @@ app.get('/profileFL/me', async (req, res) => {
     res.json({status: 'error', message: 'invalid token'});
   }
 });
+
 
 //get all
 app.get('/users', async (req, res) => {
