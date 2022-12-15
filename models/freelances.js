@@ -6,7 +6,7 @@ const freelanceSchema = new Schema(
     name: String,
     email: String,
     password: String,
-    jobTitle: Array,
+    jobTitle: String,
     phoneNumber: String,
     responseRate: Number,
     onTimeRate: Number,
