@@ -69,12 +69,27 @@ app.post('/regisEmployers', async (req, res) => {
 //login
 app.post('/loginFL', async(req, res) => {
   const { name, password } = req.body;
-  const fl = await Freelance.findOne({name: name, password: md5(password)});
+  const freelance = await Freelance.findOne({name: name, password: md5(password)});
 
-  if(!!fl) {
+  if(!!freelance) {
     var token = jwt.sign({
-      iss: fl._id,
-      name: fl.name,
+      iss: freelance._id,
+      name: freelance.name,
+    }, SECRET);
+    res.json({status: 'ok', message: 'login success', token});
+  } else {
+    res.json({status: 'error', message: 'user not found'});
+  }
+});
+
+app.post('/loginEM', async(req, res) => {
+  const { name, password } = req.body;
+  const employer = await Employer.findOne({name: name, password: md5(password)});
+
+  if(!!employer) {
+    var token = jwt.sign({
+      iss: employer._id,
+      name: employer.name,
     }, SECRET);
     res.json({status: 'ok', message: 'login success', token});
   } else {
@@ -88,18 +103,13 @@ app.get('/profileFL/me', async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     var iss = jwt.verify(token, SECRET).iss;
     const freelance = await Freelance.findOne({_id: iss});
-    res.json({status: 'ok', freelance});
+    res.json({status: 200, freelance});
   } catch(error) {
-    res.json({status: 'error', message: 'invalid token'});
+    res.json({status: 204, message: 'invalid token'});
   }
 });
 
 //get all
-app.get('/users', async (req, res) => {
-  const users = await User.find({});
-  console.log(users);
-  res.json(users);
-});
 app.get('/freelances', async (req, res) => {
   const freelances = await Freelance.find({});
   console.log(freelances);
@@ -112,11 +122,6 @@ app.get('/employers', async (req, res) => {
 });
 
 //get user details by id
-app.get('/users/:id', async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
-  res.json(user);
-});
 
 app.get('/freelances/:id', async (req, res) => {
   const { id } = req.params;
@@ -130,22 +135,7 @@ app.get('/employers/:id', async (req, res) => {
   res.json(employer);
 });
 
-//Post
-app.post('/users', async (req, res) => {
-  const payload = req.body;
-  const user = new User(payload);
-  await user.save();
-  res.status(201).end();
-});
-
 //Put
-app.put('/users/:id', async (req, res) => {
-  const payload = req.body;
-  const { id } = req.params;
-
-  const user = await User.findByIdAndUpdate(id, { $set: payload });
-  res.json(user);
-});
 app.put('/freelances/:id', async (req, res) => {
   const payload = req.body;
   const { id } = req.params;
@@ -162,12 +152,7 @@ app.put('/employers/:id', async (req, res) => {
 });
 
 //Delete
-app.delete('/users/:id', async (req, res) => {
-  const { id } = req.params;
 
-  await User.findByIdAndDelete(id);
-  res.status(204).end();
-});
 app.delete('/freelances/:id', async (req, res) => {
   const { id } = req.params;
 
