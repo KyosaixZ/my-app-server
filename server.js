@@ -11,7 +11,7 @@ app.use(express.json());
 
 const Freelance = require ('./models/freelances');
 const Employer = require ('./models/employers');
-
+const Posts = require('./models/Post');
 
 mongoose.connect(API, { useNewUrlParser: true })
 mongoose.connection.on('error', (err) => {
@@ -133,6 +133,36 @@ app.get('/employers/:id', async (req, res) => {
   const { id } = req.params;
   const employer = await Employer.findById(id);
   res.json(employer);
+});
+
+//Create Post
+app.post('/posts', (req, res) => {
+  const { title, content } = req.body;
+
+  const newPosts = new Posts ({
+    title,
+    content,
+  });
+
+  newPosts.save((error) => {
+    if (error){
+      res.json({status: 500, message: 'error'});
+    }else {
+      res.json({status: 201, message: newPosts});
+    }
+  });
+
+});
+
+//Get Post
+app.get('/Allposts', (req, res) => {
+  Posts.find({}, (error, posts) => {
+    if(error){
+      res.json({status: 500, message: 'error'});
+    }else {
+      res.status(200).send(posts)
+    }
+  });
 });
 
 //Put
