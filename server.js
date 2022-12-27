@@ -9,6 +9,7 @@ const SECRET = process.env.SECRET;
 const API = process.env.API;
 app.use(express.json());
 
+
 const Freelance = require ('./models/freelances');
 const Employer = require ('./models/employers');
 const Posts = require('./models/Post');
@@ -108,6 +109,34 @@ app.get('/profileFL/me', async (req, res) => {
     res.json({status: 204, message: 'invalid token'});
   }
 });
+
+
+
+app.put('/profileFL/edit', async (req, res) => {
+  try{
+  const token = req.headers.authorization.split(' ')[1];
+  var iss = jwt.verify(token, SECRET).iss;
+  const payload = req.body;
+  const updateFL = await Freelance.findByIdAndUpdate(iss, payload, {new: true});
+  res.json({ status: 'ok', message: 'freelance updated', updateFL });
+  } catch(error) {
+  console.log(error.message);
+  }
+  });
+
+app.put('/profileEM/edit', async (req, res) => {
+    try{
+    const token = req.headers.authorization.split(' ')[1];
+    var iss = jwt.verify(token, SECRET).iss;
+    const payload = req.body;
+    const updateEM = await Employer.findByIdAndUpdate(iss, payload, {new: true});
+    res.json({ status: 'ok', message: 'employer updated', updateEM });
+    } catch(error) {
+    console.log(error.message);
+    }
+    });
+
+
 
 //get all
 app.get('/freelances', async (req, res) => {
