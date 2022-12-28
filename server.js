@@ -122,33 +122,27 @@ app.get('/profileEM/me', async (req, res) => {
   }
 });
 
-
-
-app.put('/profileFL/edit', async (req, res) => {
-  try{
-  const token = req.headers.authorization.split(' ')[1];
-  var iss = jwt.verify(token, SECRET).iss;
-  const payload = req.body;
-  const updateFL = await Freelance.findByIdAndUpdate(iss, payload, {new: true});
-  res.json({ status: 'ok', message: 'freelance updated', updateFL });
-  } catch(error) {
-  console.log(error.message);
-  }
-  });
-
-app.put('/profileEM/edit', async (req, res) => {
-    try{
+//edit profile 
+app.patch('/profileFL/edit', async (req, res) => {
+  try {
     const token = req.headers.authorization.split(' ')[1];
     var iss = jwt.verify(token, SECRET).iss;
-    const payload = req.body;
-    const updateEM = await Employer.findByIdAndUpdate(iss, payload, {new: true});
-    res.json({ status: 'ok', message: 'employer updated', updateEM });
-    } catch(error) {
-    console.log(error.message);
-    }
-    });
+    const freelance = await Freelance.findOne({_id: iss});
 
+    freelance.name = req.body.name;
+    freelance.email = req.body.email;
+    freelance.password = md5(req.body.password);
+    freelance.jobTitle = req.body.jobTitle;
+    freelance.phoneNumber = req.body.phoneNumber;
+    freelance.profilePicture = req.body.profilePicture;
 
+    await freelance.save();
+
+    res.json({status: 200, message: 'user updated successfully'});
+  } catch(error) {
+    res.json({status: 204, message: 'invalid token'});
+  }
+});
 
 //get all
 app.get('/freelances', async (req, res) => {
@@ -223,21 +217,6 @@ app.put('/employers/:id', async (req, res) => {
 
   const employer = await Employer.findByIdAndUpdate(id, { $set: payload });
   res.json(employer);
-});
-
-//Delete
-
-app.delete('/freelances/:id', async (req, res) => {
-  const { id } = req.params;
-
-  await Freelance.findByIdAndDelete(id);
-  res.status(204).end();
-});
-app.delete('/employers/:id', async (req, res) => {
-  const { id } = req.params;
-
-  await Employer.findByIdAndDelete(id);
-  res.status(204).end();
 });
 
 

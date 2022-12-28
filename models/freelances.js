@@ -8,9 +8,7 @@ const freelanceSchema = new Schema(
     password: String,
     jobTitle: String,
     phoneNumber: String,
-    responseRate: Number,
-    onTimeRate: Number,
-    profile_pic: String
+    profile_pic: String,
   },
   { timestamps: true, versionKey: false }
 );

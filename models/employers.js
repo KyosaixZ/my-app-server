@@ -7,7 +7,6 @@ const employerSchema = new Schema(
     email: String,
     password: String,
     phoneNumber: String,
-    descRate: Number,
     profile_pic: String
   },
   { timestamps: true, versionKey: false }
