@@ -67,6 +67,7 @@ app.post('/regisEmployers', async (req, res) => {
   }
 });
 
+
 //login
 app.post('/loginFL', async(req, res) => {
   const { name, password } = req.body;
@@ -105,6 +106,17 @@ app.get('/profileFL/me', async (req, res) => {
     var iss = jwt.verify(token, SECRET).iss;
     const freelance = await Freelance.findOne({_id: iss});
     res.json({status: 200, freelance});
+  } catch(error) {
+    res.json({status: 204, message: 'invalid token'});
+  }
+});
+
+app.get('/profileEM/me', async (req, res) => {
+  try{
+    const token = req.headers.authorization.split(' ')[1];
+    var iss = jwt.verify(token, SECRET).iss;
+    const employer = await Employer.findOne({_id: iss});
+    res.json({status: 200, employer});
   } catch(error) {
     res.json({status: 204, message: 'invalid token'});
   }
@@ -166,11 +178,14 @@ app.get('/employers/:id', async (req, res) => {
 
 //Create Post
 app.post('/posts', (req, res) => {
-  const { title, content } = req.body;
+  const { title, content, contact, name, profile_pic } = req.body;
 
   const newPosts = new Posts ({
     title,
     content,
+    contact,
+    name,
+    profile_pic,
   });
 
   newPosts.save((error) => {
